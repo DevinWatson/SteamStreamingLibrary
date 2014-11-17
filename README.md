@@ -23,3 +23,6 @@ Bouncy Castle C#: https://github.com/bcgit/bc-csharp
 
 
 This application is not affiliated with Valve, Steam, or any of their partners. All copyrights reserved to their respective owners.
+
+### Please Note
+This library is built against a ever changing, internal only Steam interface and is likely to break on any Steam client update.
