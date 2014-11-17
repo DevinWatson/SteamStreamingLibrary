@@ -8,7 +8,7 @@ PSK can be found in \Program Files (x86)\Steam\userdata\\{ID}\config\localconfig
 
 ### Credits 
 
-Steam client discovery code: https://github.com/zhuowei/Varodahn
+Steam client discovery / streaming code: https://github.com/zhuowei/Varodahn
 
 Steam client discovery: http://codingrange.com/blog/steam-in-home-streaming-discovery-protocol
 
