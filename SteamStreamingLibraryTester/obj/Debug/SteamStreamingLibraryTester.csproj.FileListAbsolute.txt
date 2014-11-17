@@ -1,0 +1,17 @@
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\SteamStreamingLibraryTester.exe.config
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\SteamStreamingLibraryTester.exe
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\SteamStreamingLibraryTester.pdb
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\SteamStreamingLibrary.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\protobuf-net.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\crypto.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\nunit.core.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\nunit.framework.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\nunit.core.interfaces.dll
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\SteamStreamingLibrary.pdb
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\protobuf-net.pdb
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\protobuf-net.xml
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\crypto.pdb
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\bin\Debug\crypto.xml
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\obj\Debug\SteamStreamingLibraryTester.csprojResolveAssemblyReference.cache
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\obj\Debug\SteamStreamingLibraryTester.exe
+c:\users\devin\documents\visual studio 2013\Projects\SteamStreamingLibrary\SteamStreamingLibraryTester\obj\Debug\SteamStreamingLibraryTester.pdb
