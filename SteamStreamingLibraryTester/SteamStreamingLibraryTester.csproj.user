@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>192.168.1.116 27036 9ec756d59f3e49ccc079c0845f566d71228e7b3a2aa6dda4e9680e4a04142ae1 233150</StartArguments>
   </PropertyGroup>
 </Project>

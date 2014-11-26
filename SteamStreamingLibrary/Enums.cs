@@ -68,14 +68,22 @@ namespace SteamStreamingLibrary
   enum EUniverse
   {
     Invalid = 0,
-
     Public = 1,
     Beta = 2,
     Internal = 3,
     Dev = 4,
-
     Max = 5,
   };
 
+  enum StreamingPacketType
+  {
+    Connect = 1,
+    ConnectResponse = 2,
+    Data = 3,
+    Control = 5,
+    ControlContinued = 6,
+    ControlAcknoledge = 7,
+    Disconnect = 9
+  }
 
 }

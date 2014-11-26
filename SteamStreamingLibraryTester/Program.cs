@@ -10,49 +10,59 @@ namespace SteamStreamingLibraryTester
 {
   class Program
   {
-    static StreamingClient StreamingClient;
+    static StreamInitializationClient StreamingInitializationClient;
+    static StreamControlClient StreamControlClient;
     static UInt32 AppID;
+    static UInt64 ClientID;
 
     static void Main(string[] args)
     {
-      StreamingClient = new StreamingClient();
-      StreamingClient.Initialize(ExceptionHandler);
+      StreamingInitializationClient = new StreamInitializationClient(ExceptionHandler);
       IPAddress IPAddress;
       if (!IPAddress.TryParse(args[0], out IPAddress))
       {
-        Console.WriteLine("Unable to parse IP address");
+        Console.WriteLine("Unable to parse IP address: " + args[0]);
         Console.ReadLine();
         return;
       }
       UInt16 Port;
       if(!UInt16.TryParse(args[1], out Port))
       {
-        Console.WriteLine("Unable to parse port");
+        Console.WriteLine("Unable to parse port: " + args[1]);
         Console.ReadLine();
         return;
       }
       if (!UInt32.TryParse(args[3], out AppID))
       {
-        Console.WriteLine("Unable to parse app id");
+        Console.WriteLine("Unable to parse app id: " + args[3]);
         Console.ReadLine();
         return;
       }
       Random rnd = new Random();
       byte[] bytes = new byte[8];
       rnd.NextBytes(bytes);
-      UInt64 ClientID = BitConverter.ToUInt64(bytes, 0);
-      StreamingClient.Connect(IPAddress, Port, args[2], ClientID, ConnectionHandler);
+      ClientID = BitConverter.ToUInt64(bytes, 0);
+      StreamingInitializationClient.Connect(IPAddress, Port, args[2], ClientID, ConnectionResponseHandler);
     }
 
-    private static void ConnectionHandler(bool Connected)
+    private static void ConnectionResponseHandler(bool Connected)
     {
+      Console.WriteLine("Connected: " + Connected);
       if (Connected)
-        StreamingClient.StartStream(233150);
+        StreamingInitializationClient.StartStream(AppID, StreamStarted);
+    }
+
+    private static void StreamStarted(IPAddress IPAddress, UInt16 Port, Byte[] AuthToken)
+    {
+      Console.WriteLine(string.Format("Stream Started: {0}:{1}", IPAddress.ToString(), Port));
+      StreamControlClient = new StreamControlClient(ExceptionHandler);
+      StreamControlClient.Connect(IPAddress, Port, AuthToken);
     }
 
     private static void ExceptionHandler(Exception e)
     {
       Console.WriteLine(e.Message + Environment.NewLine + e.StackTrace);
+      Console.ReadLine();
     }
   }
 }
