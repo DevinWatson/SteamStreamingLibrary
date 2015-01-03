@@ -36,7 +36,15 @@ namespace SteamStreamingLibrary
     private Thread PingingThread;
     private bool PingingThreadAlive;
 
-    private Dictionary<Type, MsgRemoteClient> MessageDictionary;
+    private readonly Dictionary<Type, MsgRemoteClient> MsgRemoteClientDictionary = new Dictionary<Type, MsgRemoteClient>() { 
+    {typeof(CMsgRemoteClientAuth), MsgRemoteClient.CMsgRemoteClientAuth} ,
+    {typeof(CMsgRemoteClientAuthResponse), MsgRemoteClient.CMsgRemoteClientAuthResponse} ,
+    {typeof(CMsgRemoteClientAppStatus), MsgRemoteClient.CMsgRemoteClientAppStatus} ,
+    {typeof(CMsgRemoteClientPing), MsgRemoteClient.CMsgRemoteClientPing} ,
+    {typeof(CMsgRemoteClientPingResponse), MsgRemoteClient.CMsgRemoteClientPingResponse} ,
+    {typeof(CMsgRemoteClientStartStream), MsgRemoteClient.CMsgRemoteClientStartStream} ,
+    {typeof(CMsgRemoteClientStartStreamResponse), MsgRemoteClient.CMsgRemoteClientStartStreamResponse}};
+
     private List<object> OutgoingMessages;
 
     private ExceptionHandler ExceptionHandler;
@@ -48,20 +56,12 @@ namespace SteamStreamingLibrary
     public StreamInitializationClient(ExceptionHandler ExceptionHandler)
     {
       if (ExceptionHandler == null)
-        throw new Exception("Exception handler cannot be null");
+        throw new ArgumentNullException("ExceptionHandler");
       this.ExceptionHandler = ExceptionHandler;
       AppDomain.CurrentDomain.UnhandledException += HandleException;
 
       OutgoingMessages = new List<object>();
 
-      MessageDictionary = new Dictionary<Type, MsgRemoteClient>();
-      MessageDictionary.Add(typeof(CMsgRemoteClientAuth), MsgRemoteClient.CMsgRemoteClientAuth);
-      MessageDictionary.Add(typeof(CMsgRemoteClientAuthResponse), MsgRemoteClient.CMsgRemoteClientAuthResponse);
-      MessageDictionary.Add(typeof(CMsgRemoteClientAppStatus), MsgRemoteClient.CMsgRemoteClientAppStatus);
-      MessageDictionary.Add(typeof(CMsgRemoteClientPing), MsgRemoteClient.CMsgRemoteClientPing);
-      MessageDictionary.Add(typeof(CMsgRemoteClientPingResponse), MsgRemoteClient.CMsgRemoteClientPingResponse);
-      MessageDictionary.Add(typeof(CMsgRemoteClientStartStream), MsgRemoteClient.CMsgRemoteClientStartStream);
-      MessageDictionary.Add(typeof(CMsgRemoteClientStartStreamResponse), MsgRemoteClient.CMsgRemoteClientStartStreamResponse);
 
       IncomingMessageProcessingThread = new Thread(new ThreadStart(IncomingMessageProcessing));
       OutgoingMessageProcessingThread = new Thread(new ThreadStart(OutgoingMessageProcessing));
@@ -80,15 +80,15 @@ namespace SteamStreamingLibrary
     {
       AssertInitialized();
       if (IPAddress == null)
-        throw new Exception("IPAddress cannot be null");
+        throw new ArgumentNullException("IPAddress");
       if (Port == 0)
-        throw new Exception("Port cannot be 0");
+        throw new ArgumentOutOfRangeException("Port", "Must be greater than 0");
       if (PSK.Length != 64)
         throw new Exception("Invalid PSK string length");
       if (ClientID == 0)
-        throw new Exception("Client ID cannot be 0");
+        throw new ArgumentOutOfRangeException("ClientID", "Must be greater than 0");
       if (ConnectHandler == null)
-        throw new Exception("Connection handler cannot be null");
+        throw new ArgumentNullException("ConnectionHandler");
       this.IPAddress = IPAddress;
       this.ConnectionResponseHandler += ConnectHandler;
       Connect(IPAddress, Port, Utils.StringToByteArray(PSK), ClientID);
@@ -98,13 +98,13 @@ namespace SteamStreamingLibrary
     {
       AssertInitialized();
       if (IPAddress == null)
-        throw new Exception("IPAddress cannot be null");
+        throw new ArgumentNullException("IPAddress");
       if (Port == 0)
-        throw new Exception("Port cannot be 0");
-      if(PSK.Length != 32)
-        throw new Exception("Invalid PSK byte array length");
+        throw new ArgumentOutOfRangeException("Port", "Must be greater than 0");
+      if (PSK.Length != 32)
+        throw new ArgumentException("Must be 32 bytes", "PSK");
       if (ClientID == 0)
-        throw new Exception("Client ID cannot be 0");
+        throw new ArgumentOutOfRangeException("ClientID", "Must be greater than 0");
       this.IPAddress = IPAddress;
       try
       {
@@ -128,9 +128,9 @@ namespace SteamStreamingLibrary
     {
       AssertInitialized();
       if (AppID == 0)
-        throw new Exception("App ID cannot be 0");
+        throw new ArgumentOutOfRangeException("AppID", "Must be greater than 0");
       if (StreamStartedResponseHandler == null)
-        throw new Exception("StreamStartedResponseHandler cannot be null");
+        throw new ArgumentNullException("StreamStartedResponseHandler");
       this.StreamStartedResponseHandler = StreamStartedResponseHandler;
       CMsgRemoteClientStartStream StartStreamRequest = new CMsgRemoteClientStartStream();
       StartStreamRequest.app_id = (UInt32)AppID;
@@ -218,7 +218,7 @@ namespace SteamStreamingLibrary
                   case MsgRemoteClient.CMsgRemoteClientAuthResponse:
                     CMsgRemoteClientAuthResponse CMsgRemoteClientAuthResponse;
                     CMsgRemoteClientAuthResponse = Serializer.Deserialize<CMsgRemoteClientAuthResponse>(stream);
-                    if (CMsgRemoteClientAuthResponse.eresult == 1) 
+                    if (CMsgRemoteClientAuthResponse.eresult == 1)
                     {
                       PingingThread.Start(); //We're connected so start the pinging thread
                       ConnectionResponseHandler(true);
@@ -324,7 +324,7 @@ namespace SteamStreamingLibrary
     private void ProcessOutgoingMessage<T>(object Message)
     {
 #if DEBUG
-      Utils.ColoredConsoleWrite(ConsoleColor.Green, ">>" + MessageDictionary[typeof(T)] + Environment.NewLine);
+      Utils.ColoredConsoleWrite(ConsoleColor.Green, ">>" + MsgRemoteClientDictionary[typeof(T)] + Environment.NewLine);
 #endif
       List<byte> OutgoingMessageData = new List<byte>();
       using (var stream = new MemoryStream())
@@ -333,7 +333,7 @@ namespace SteamStreamingLibrary
         byte[] MessageData = stream.GetBuffer().Take((Int32)stream.Length).ToArray();
         OutgoingMessageData.AddRange(BitConverter.GetBytes((Int32)(MessageData.Length + 8))); // Length
         OutgoingMessageData.AddRange(MagicBytes); // Magic Bytes
-        OutgoingMessageData.AddRange(BitConverter.GetBytes((Int32)((UInt16)MessageDictionary[typeof(T)] | 0x80000000))); // EMsg Value
+        OutgoingMessageData.AddRange(BitConverter.GetBytes((Int32)((UInt16)MsgRemoteClientDictionary[typeof(T)] | 0x80000000))); // EMsg Value
         OutgoingMessageData.AddRange(BitConverter.GetBytes((Int32)0)); // Legacy Header
         OutgoingMessageData.AddRange(MessageData);
         TLSStream.Write(OutgoingMessageData.ToArray(), 0, OutgoingMessageData.Count);
@@ -345,7 +345,7 @@ namespace SteamStreamingLibrary
     private void PeriodicPingingThread()
     {
       PingingThreadAlive = true;
-      while(PingingThreadAlive)
+      while (PingingThreadAlive)
       {
         Thread.Sleep(new TimeSpan(0, 0, 30));
         AddOutgoingMessageToQueue(new CMsgRemoteClientPing());
